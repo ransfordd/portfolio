@@ -1,0 +1,4 @@
+# Coolify uses Nixpacks and expects static files in /app/dist.
+# Next.js "output: export" writes to `out/`, so we copy to `dist` after build.
+[phases.build]
+cmds = ["npm run build", "cp -r out dist"]
