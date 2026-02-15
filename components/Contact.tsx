@@ -19,13 +19,34 @@ const socialLinks = [
 export function Contact() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const copyToClipboard = useCallback(async (value: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch {
-      setCopiedId(null);
+  const copyToClipboard = useCallback((value: string, id: string) => {
+    const fallbackCopy = () => {
+      const textarea = document.createElement("textarea");
+      textarea.value = value;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+      } catch {
+        setCopiedId(null);
+      }
+      document.body.removeChild(textarea);
+    };
+
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(value).then(
+        () => {
+          setCopiedId(id);
+          setTimeout(() => setCopiedId(null), 2000);
+        },
+        () => fallbackCopy()
+      );
+    } else {
+      fallbackCopy();
     }
   }, []);
 
