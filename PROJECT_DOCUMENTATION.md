@@ -308,6 +308,7 @@ Assets used by project cards and modal. Paths in code use URL-encoded spaces whe
 
 - Coolify uses Nixpacks to build and expects static output in `/app/dist`. The repo is set up for this:
   - When `COOLIFY_FQDN` is set at build time, `next.config.js` uses `output: "export"` so `next build` produces the `out/` directory.
+  - `images.unoptimized: true` is set for static export so the Next.js `<Image>` component outputs plain `<img>` tags and images from `public/` are copied into the export and display correctly (no image optimization server).
   - `nixpacks.toml` runs `npm run build` then `cp -r out dist`, so the final image has static files in `/app/dist` for Coolify’s nginx stage.
 - No extra env vars are required in Coolify; push to your branch and deploy.
 
